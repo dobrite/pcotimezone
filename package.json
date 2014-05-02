@@ -1,0 +1,19 @@
+{
+  "name": "tzwhere-heroku",
+  "version": "0.0.0",
+  "description": "simple api wrapper around tzwhere",
+  "main": "web.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.1.1",
+    "logfmt": "^1.1.2",
+    "tzwhere": "^1.0.0"
+  },
+  "engines": {
+    "node": "0.10.x"
+  }
+}
