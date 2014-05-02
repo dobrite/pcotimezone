@@ -18,7 +18,7 @@ app.get('/', function(req, res, next) {
   var lat = req.query.lat;
   var lng = req.query.lng;
   var tz  = tzwhere.tzNameAt(lat, lng);
-  res.json({tz: tz});
+  res.json({tz: tz || 'etc/utc'});
 });
 
 var port = Number(process.env.PORT || 5000);
