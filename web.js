@@ -2,7 +2,6 @@
 var express   = require("express");
 var logfmt    = require("logfmt");
 var tzwhere   = require("tzwhere");
-var BigNumber = require("bignumber.js");
 var app = express();
 
 tzwhere.init();
@@ -20,26 +19,23 @@ app.get('/', function(req, res, next) {
   var lng = req.query.lng;
 
   if (!(lat && lng)) {
-    res.statusCode = 422;
-    return res.json({error: 'must pass in lat and lng as query args'});
+    throw new Error('must pass in lat and lng as query args');
   }
 
-  var bLat = BigNumber(lat);
+  var tz;
 
-  if (bLat.gte(BigNumber(85.0)) || bLat.lte(BigNumber(-85.05115))) {
-    res.statusCode = 422;
-    return res.json({error: 'lat must be between -85.05115 and 85.0'});
+  try {
+    tz  = tzwhere.tzNameAt(lat, lng);
+  } catch (err) {
+    throw new Error('check lat/lng bounds');
   }
 
-  var bLng = BigNumber(lng);
+  res.json({tz: tz || 'etc/utc'});
+});
 
-  if (bLng.gte(BigNumber(180.0)) || bLng.lte(BigNumber(-180.0))) {
-    res.statusCode = 422;
-    return res.json({error: 'lng must be between -180.0 and 180.0'});
-  }
-
-  var tz  = tzwhere.tzNameAt(bLat.toFixed(), bLng.toFixed());
-  return res.json({tz: tz || 'etc/utc'});
+app.use(function(err, req, res, next) {
+  res.statusCode = 422;
+  res.json({error: err.message});
 });
 
 var port = Number(process.env.PORT || 5000);
